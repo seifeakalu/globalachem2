@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>GlobalChem Manufacturing PLC | Secure Global Trade Solutions</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #1A2C3E;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Custom smooth scroll without CSS global because we need offset */
+    html {
+      scroll-behavior: auto; /* we'll use JS for smooth + offset */
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Navbar with scroll effect */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: all 0.3s ease;
+    }
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 0.7rem 0;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-image {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(145deg, #1A5F7A, #0E3E52);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-image img {
+      width: 32px;
+      height: 32px;
+      filter: brightness(0) invert(1);
+    }
+    .logo-text h1 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #0B2B40 0%, #1A5F7A 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .logo-text span {
+      font-size: 0.7rem;
+      font-weight: 500;
+      display: block;
+      color: #2C7A6E;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #1F3E48;
+      transition: 0.2s;
+    }
+    .nav-links a:hover {
+      color: #E67E22;
+    }
+    .menu-icon {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #1F3E48;
+    }
+    /* Mobile menu */
+    @media (max-width: 960px) {
+      .container {
+        padding: 0 24px;
+      }
+      .menu-icon {
+        display: block;
+        z-index: 1001;
+      }
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 75%;
+        max-width: 320px;
+        height: 100vh;
+        background: #ffffff;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        z-index: 1000;
+        padding: 2rem 1rem;
+      }
+      .nav-links.active {
+        right: 0;
+      }
+      .nav-links a {
+        font-size: 1.3rem;
+        border-bottom: 1px solid #E9F0F3;
+        padding: 12px 0;
+        display: block;
+        width: 100%;
+        text-align: center;
+      }
+      body.menu-open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+      }
+      .logo-image {
+        width: 40px;
+        height: 40px;
+      }
+      .logo-text h1 {
+        font-size: 1.3rem;
+      }
+      .hero-slider {
+        margin-top: 70px;
+      }
+    }
+    /* Hero slider */
+    .hero-slider {
+      position: relative;
+      width: 100%;
+      height: 85vh;
+      min-height: 550px;
+      overflow: hidden;
+      background: #0B2B40;
+    }
+    .slide-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-in-out, visibility 0.8s;
+      display: flex;
+      align-items: center;
+    }
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 2;
+    }
+    .slide-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.45);
+    }
+    .slide-content {
+      position: relative;
+      z-index: 3;
+      max-width: 700px;
+      padding: 0 2rem;
+      color: white;
+    }
+    .slide-content h2 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1.2rem;
+    }
+    .slide-content p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .btn-primary {
+      background: #E67E22;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      transition: 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      background: #D35400;
+    }
+    .slider-nav {
+      position: absolute;
+      bottom: 30px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      z-index: 10;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .dot.active {
+      background: #E67E22;
+      width: 28px;
+      border-radius: 20px;
+    }
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      font-size: 1.5rem;
+    }
+    .slider-arrow:hover { background: #E67E22; }
+    .arrow-left { left: 20px; }
+    .arrow-right { right: 20px; }
+    @media (max-width: 768px) {
+      .hero-slider { height: 70vh; margin-top: 60px; }
+      .slide-content h2 { font-size: 2.2rem; }
+      .slide-content p { font-size: 1rem; }
+    }
+    /* Sections */
+    section { padding: 80px 0; }
+    .section-title {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #0B2B40;
+    }
+    .section-sub {
+      color: #5A7E8C;
+      max-width: 700px;
+      margin-bottom: 3rem;
+      font-size: 1.1rem;
+    }
+    .title-decoration { text-align: center; margin-bottom: 3rem; }
+    .vm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .vm-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 32px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+      border: 1px solid #E9F0F3;
+    }
+    .vm-card i { font-size: 2.8rem; color: #E67E22; margin-bottom: 1.2rem; }
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .step {
+      text-align: center;
+      padding: 1.5rem;
+      background: #F8FBFD;
+      border-radius: 28px;
+    }
+    .step .step-num {
+      background: #1A5F7A;
+      width: 48px;
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 60px;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .product-card {
+      background: white;
+      border-radius: 28px;
+      padding: 1.8rem 1.5rem;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.05);
+      transition: 0.3s;
+      border: 1px solid #EFF4F7;
+    }
+    .product-card:hover { transform: translateY(-8px); }
+    .product-icon { font-size: 2.5rem; color: #1A5F7A; margin-bottom: 1rem; }
+    .market-content {
+      background: linear-gradient(120deg, #0E2A36, #1A4A5A);
+      border-radius: 48px;
+      padding: 3rem;
+      color: white;
+    }
+    /* Partners grid with images */
+    .partners-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .partner-card {
+      background: white;
+      border-radius: 32px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: 0.3s;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      border: 1px solid #EFF4F7;
+    }
+    .partner-card:hover { transform: translateY(-6px); }
+    .partner-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      background: #F4F9FC;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .partner-logo svg { width: 48px; height: 48px; }
+    .partner-card h4 { font-size: 1.1rem; font-weight: 700; color: #1F3E48; }
+    .partner-card p { font-size: 0.8rem; color: #5A7E8C; }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      background: #F8FBFE;
+      border-radius: 48px;
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .contact-info i { width: 40px; color: #E67E22; font-size: 1.3rem; }
+    .contact-form-card {
+      background: white;
+      border-radius: 48px;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.08);
+      border: 1px solid #E9F0F3;
+    }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 28px;
+      border: 1px solid #DCE6EC;
+      font-family: inherit;
+    }
+    .form-status {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      border-radius: 40px;
+      text-align: center;
+      display: none;
+    }
+    .form-status.success { background: #DCFCE7; color: #166534; display: block; }
+    .form-status.error { background: #FEE2E2; color: #991B1B; display: block; }
+    .map-container {
+      margin-top: 2rem;
+      border-radius: 32px;
+      overflow: hidden;
+    }
+    .map-container iframe {
+      width: 100%;
+      height: 320px;
+      border: 0;
+    }
+    .footer {
+      background: #0A1F28;
+      color: #CDE5ED;
+      padding: 2.5rem 0;
+      text-align: center;
+    }
+    .fade-up {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity 0.8s ease, transform 0.7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    @media (max-width: 640px) {
+      .section-title { font-size: 2rem; }
+      .partners-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="mainNavbar">
+  <div class="container nav-container">
+    <div class="logo">
+      <div class="logo-image">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%231A5F7A'/%3E%3Cpath fill='%23FFFFFF' d='M62 32H38c-2.2 0-4 1.8-4 4v8c0 2.2 1.8 4 4 4h24c2.2 0 4-1.8 4-4v-8c0-2.2-1.8-4-4-4zm-6 28h-4l-6-12h16l-6 12zm-8-20v-10h20v10H48z'/%3E%3C/svg%3E" alt="Logo">
+      </div>
+      <div class="logo-text">
+        <h1>GlobalChem <span>MANUFACTURING PLC</span></h1>
+      </div>
+    </div>
+    <button class="menu-icon" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#market">Markets</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero Slider -->
+<section id="home" class="hero-slider">
+  <div class="slide-container">
+    <div class="slide active"><div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1566576721347-dbb1521c6b6c?w=2070&auto=format');"></div><div class="slide-content"><h2>Secure & Transparent<br>Global Trade</h2><p>Collateral-backed solutions, LC, TT, CAD facilities for risk-free transactions.</p><a href="#contact" class="btn-primary">Get started <i class="fas fa-arrow-right"></i></a></div></div>
+    <div class="slide"><div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=2070&auto=format');"></div><div class="slide-content"><h2>Unlimited Forex Access</h2><p>Continuous forex liquidity for seamless cross-border payments.</p><a href="#contact" class="btn-primary">Explore solutions</a></div></div>
+    <div class="slide"><div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=2070&auto=format');"></div><div class="slide-content"><h2>Zero-Risk Operations</h2><p>Collateral-backed guarantees for every transaction.</p><a href="#about" class="btn-primary">Discover more</a></div></div>
+    <div class="slide"><div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=2073&auto=format');"></div><div class="slide-content"><h2>Empowering East Africa</h2><p>Tailored solutions for the growing East African market.</p><a href="#market" class="btn-primary">Learn more</a></div></div>
+  </div>
+  <div class="slider-arrow arrow-left" id="prevSlide"><i class="fas fa-chevron-left"></i></div>
+  <div class="slider-arrow arrow-right" id="nextSlide"><i class="fas fa-chevron-right"></i></div>
+  <div class="slider-nav" id="sliderDots"></div>
+</section>
+
+<!-- About Vision Mission -->
+<section id="about">
+  <div class="container">
+    <div class="title-decoration fade-up"><h2 class="section-title">Driving Global Commerce with Integrity</h2><p class="section-sub">Trust, transparency, and innovation — the pillars of every transaction</p></div>
+    <div class="vm-grid">
+      <div class="vm-card fade-up"><i class="fas fa-eye"></i><h3>Vision</h3><p>"To become a global industry leader, renowned for delivering unparalleled quality, transparency, and value."</p></div>
+      <div class="vm-card fade-up"><i class="fas fa-bullseye"></i><h3>Mission</h3><p>"Empowering global trade with trust, transparency, and excellence—your success is our commitment."</p></div>
+      <div class="vm-card fade-up"><i class="fas fa-handshake"></i><h3>Our Promise</h3><p>Uninterrupted forex access, prompt supplier payments, and zero-hassle import-export operations.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section style="background:#F7FCFE;"><div class="container"><div class="title-decoration fade-up"><h2 class="section-title">Seamless Trade Architecture</h2><p class="section-sub">How we enable risk‑free & efficient global commerce</p></div><div class="process-grid"><div class="step fade-up"><div class="step-num">1</div><h4>Needs Assessment</h4><p>Tailored solutions for manufacturing, agri, trade.</p></div><div class="step fade-up"><div class="step-num">2</div><h4>Secure Financing</h4><p>LC, TT, CAD facilities.</p></div><div class="step fade-up"><div class="step-num">3</div><h4>Collateral-Backed Safety</h4><p>Guaranteed risk‑free transactions.</p></div><div class="step fade-up"><div class="step-num">4</div><h4>Timely Settlements</h4><p>On-time supplier payments.</p></div></div></div></section>
+
+<!-- Products -->
+<section id="products"><div class="container"><div class="title-decoration fade-up"><h2 class="section-title">Products & Services</h2><p class="section-sub">Complete industrial supply chain & raw materials</p></div><div class="products-grid"><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-tachometer-alt"></i></div><h4>Dairy Machineries & Spares</h4><p>Pasteurizers, homogenizers, valves, pumps.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-bolt"></i></div><h4>Generators & Spare Parts</h4><p>Diesel, gas, solar generators, alternators.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-industry"></i></div><h4>Factory Machineries</h4><p>CNC, automation systems, motors.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-oil-can"></i></div><h4>Engine Oils & Lubricants</h4><p>Diesel, gear, hydraulic oils.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-car"></i></div><h4>Tyres</h4><p>Automotive, industrial, OTR tyres.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-utensils"></i></div><h4>Food & Beverage</h4><p>Flavours, additives, premixes.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-spa"></i></div><h4>Home & Personal Care</h4><p>Fragrances, chemicals, soap noodles.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-paint-roller"></i></div><h4>Paint & Construction</h4><p>Styrene, pigments, epoxy.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-capsules"></i></div><h4>Pharma Sector</h4><p>Pharmaceuticals, nutraceuticals.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-gem"></i></div><h4>Finished Goods</h4><p>Energy drinks, perfumes, stationery.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-boxes"></i></div><h4>Polymer Sector</h4><p>Plastics, packaging polymers.</p></div><div class="product-card fade-up"><div class="product-icon"><i class="fas fa-road"></i></div><h4>Bitumen & Asphalt</h4><p>Road construction, waterproofing.</p></div></div></div></section>
+
+<!-- Market -->
+<section id="market"><div class="container"><div class="title-decoration fade-up"><h2 class="section-title">Our Market Footprint</h2><p class="section-sub">Connecting East Africa to global supply chains</p></div><div class="market-content fade-up"><div style="display:flex; flex-wrap:wrap; gap:2rem;"><div style="flex:1"><i class="fas fa-chart-line" style="font-size:2.5rem;"></i><h3>Global Reach</h3><p>LC/TT/CAD financing, forex liquidity.</p></div><div style="flex:1"><i class="fas fa-map-marker-alt" style="font-size:2.5rem;"></i><h3>East Africa Expansion</h3><p>Localized risk-free solutions.</p></div><div style="flex:1"><i class="fas fa-hand-holding-usd" style="font-size:2.5rem;"></i><h3>Collateral-Backed Security</h3><p>Zero-risk environment.</p></div></div></div></div></section>
+
+<!-- PARTNERS SECTION -->
+<section style="background: #FEFAF5;">
+  <div class="container">
+    <div class="title-decoration fade-up">
+      <h2 class="section-title">Our Strategic Partners</h2>
+      <p class="section-sub">Trusted alliances that empower global value chains</p>
+    </div>
+    <div class="partners-grid fade-up">
+      <div class="partner-card"><div class="partner-logo"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#1A5F7A"/><path fill="#FFF" d="M50 20 L68 38 L62 56 L38 56 L32 38 Z"/><text x="50" y="72" font-size="14" text-anchor="middle" fill="#FFF">ECIA</text></svg></div><h4>Ethiopian Chemicals Importers Association</h4><p>Strategic policy & trade alignment</p></div>
+      <div class="partner-card"><div class="partner-logo"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#E67E22"/><path d="M30 50 L50 30 L70 50 L50 70 Z" fill="#FFF"/><text x="50" y="68" font-size="12" text-anchor="middle" fill="#E67E22">ATI</text></svg></div><h4>Africa Trade Insurance Agency</h4><p>Risk mitigation & trade credit</p></div>
+      <div class="partner-card"><div class="partner-logo"><svg viewBox="0 0 100 100"><rect width="80" height="60" x="10" y="20" fill="#2C7A6E" rx="8"/><path d="M30 50 L70 50" stroke="#FFF" stroke-width="4"/><circle cx="35" cy="70" r="8" fill="#FFF"/><circle cx="65" cy="70" r="8" fill="#FFF"/></svg></div><h4>Global Logistics & Freight Alliance</h4><p>Seamless supply chain integration</p></div>
+      <div class="partner-card"><div class="partner-logo"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#0E3E52"/><path d="M30 40 L50 25 L70 40 L70 60 L50 75 L30 60 Z" fill="#FFF"/></svg></div><h4>East African Industrial Development Bank</h4><p>Project financing & forex support</p></div>
+      <div class="partner-card"><div class="partner-logo"><svg viewBox="0 0 100 100"><rect width="60" height="60" x="20" y="20" fill="#D35400" rx="10"/><path d="M40 35 L60 50 L40 65 L40 35" fill="#FFF"/></svg></div><h4>Addis Ababa Chamber of Commerce</h4><p>Trade facilitation & advocacy</p></div>
+      <div class="partner-card"><div class="partner-logo"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#1A5F7A"/><path d="M35 45 L65 45 M50 30 L50 70" stroke="#FFF" stroke-width="6"/></svg></div><h4>International Raw Materials Federation</h4><p>Sourcing specialty chemicals & polymers</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section><div class="container"><div class="title-decoration fade-up"><h2 class="section-title">Team Globalchem</h2><p class="section-sub">Dedicated to redefining global trade with integrity</p></div><div class="vm-grid" style="grid-template-columns:1fr 1fr;"><div class="vm-card fade-up"><i class="fas fa-users"></i><h3>Welcome to GlobalChem</h3><p>Committed to secure, transparent import-export solutions. 24/7 support to empower your business.</p></div><div class="vm-card fade-up"><i class="fas fa-quote-right"></i><h3>Our Motto</h3><p>"Pioneering safe, secure, and transparent global trade."</p></div></div></div></section>
+
+<!-- Contact + Map + Form -->
+<section id="contact">
+  <div class="container">
+    <div class="title-decoration fade-up"><h2 class="section-title">Let's Connect With Us!</h2><p class="section-sub">Reach out for tailored trade solutions, forex access, or partnership inquiries</p></div>
+    <div class="contact-grid fade-up">
+      <div class="contact-info"><i class="fas fa-phone-alt"></i> <strong>Phone</strong><br>+251 901 60 7182 <br>+251 911 55 5069 <br>+251 91164 9750</div>
+      <div class="contact-info"><i class="fas fa-envelope"></i> <strong>Email</strong><br>globalchemmanufacturingplc@gmail.com</div>
+      <div class="contact-info"><i class="fas fa-map-pin"></i> <strong>Head Office</strong><br>Century Executive Tower, near Aya Hotel, Bole Atlas, Addis Ababa</div>
+      <div class="contact-info"><i class="fas fa-clock"></i> <strong>Continuous Support</strong><br>Unlimited forex access & risk-free consultations</div>
+    </div>
+    <div class="map-container fade-up">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.395552163049!2d38.76327207478632!3d9.022392891041648!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b85ce2f7f7d6f%3A0xe5d7b8e2c5b8f1a!2sCentury%20Executive%20Tower!5e0!3m2!1sen!2set!4v1713870000000!5m2!1sen!2set" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+    <div class="contact-form-card fade-up">
+      <h3 style="font-size:1.8rem; margin-bottom:0.5rem;"><i class="fas fa-paper-plane"></i> Send us a message</h3>
+      <p style="margin-bottom:1.5rem; color:#5A7E8C;">Our trade experts will respond within 24 hours.</p>
+      <form id="contactForm">
+        <div class="form-group"><label>Full name *</label><input type="text" id="fullname" required></div>
+        <div class="form-group"><label>Email *</label><input type="email" id="email" required></div>
+        <div class="form-group"><label>Subject</label><input type="text" id="subject"></div>
+        <div class="form-group"><label>Message *</label><textarea id="message" rows="4" required></textarea></div>
+        <button type="submit" class="btn-primary" style="width:100%; border:none;">Send Message</button>
+        <div id="formStatus" class="form-status"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><p>© 2025 GlobalChem Manufacturing PLC — Empowering seamless, collateral-backed global trade.</p><p>📍 Addis Ababa, Ethiopia | 🌍 LC, TT, CAD, Forex Access</p></div></footer>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinksMenu = document.getElementById('navLinks');
+  const bodyEl = document.body;
+  function closeMenu() { navLinksMenu.classList.remove('active'); bodyEl.classList.remove('menu-open'); }
+  function openMenu() { navLinksMenu.classList.add('active'); bodyEl.classList.add('menu-open'); }
+  menuToggle.addEventListener('click', (e) => { e.stopPropagation(); navLinksMenu.classList.contains('active') ? closeMenu() : openMenu(); });
+  document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => { closeMenu(); }));
+  document.addEventListener('click', (e) => { if(bodyEl.classList.contains('menu-open') && !navLinksMenu.contains(e.target) && !menuToggle.contains(e.target)) closeMenu(); });
+  
+  // Navbar scroll effect
+  const navbar = document.getElementById('mainNavbar');
+  window.addEventListener('scroll', () => { if(window.scrollY > 30) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled'); });
+  
+  // Hero slider logic
+  const slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('sliderDots');
+  let current = 0, interval;
+  function createDots() { slides.forEach((_, i) => { let dot = document.createElement('div'); dot.classList.add('dot'); if(i===current) dot.classList.add('active'); dot.addEventListener('click', () => goToSlide(i)); dotsContainer.appendChild(dot); }); }
+  function updateDots() { document.querySelectorAll('.dot').forEach((dot,i) => { if(i===current) dot.classList.add('active'); else dot.classList.remove('active'); }); }
+  function goToSlide(index) { slides.forEach((s,i) => s.classList.toggle('active', i===index)); current = index; updateDots(); resetInterval(); }
+  function nextSlide() { goToSlide((current+1)%slides.length); }
+  function prevSlide() { goToSlide((current-1+slides.length)%slides.length); }
+  function resetInterval() { if(interval) clearInterval(interval); interval = setInterval(nextSlide, 5000); }
+  document.getElementById('nextSlide').addEventListener('click', nextSlide);
+  document.getElementById('prevSlide').addEventListener('click', prevSlide);
+  createDots(); resetInterval();
+  
+  // Smooth scroll with offset for fixed navbar
+  function smoothScrollTo(targetElement, offset = 80) {
+    if (!targetElement) return;
+    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = elementPosition - offset;
+    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+  }
+  // Intercept all anchor links that start with #
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === "#" || targetId === "") return;
+      const targetElem = document.querySelector(targetId);
+      if (targetElem) {
+        e.preventDefault();
+        // Close mobile menu if open
+        if (navLinksMenu.classList.contains('active')) closeMenu();
+        // Small delay to allow menu closing then scroll
+        setTimeout(() => {
+          smoothScrollTo(targetElem, 70);
+        }, 10);
+      }
+    });
+  });
+  
+  // fade-up animations
+  const fades = document.querySelectorAll('.fade-up');
+  const obs = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }); }, { threshold:0.1 });
+  fades.forEach(el => obs.observe(el));
+  
+  // Contact form submission
+  const form = document.getElementById('contactForm');
+  const statusDiv = document.getElementById('formStatus');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value.trim() || 'Website Inquiry';
+    const message = document.getElementById('message').value.trim();
+    if(!name || !email || !message) { statusDiv.textContent = 'Please fill required fields.'; statusDiv.className = 'form-status error'; statusDiv.style.display='block'; return; }
+    statusDiv.style.display='none';
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/globalchemmanufacturingplc@gmail.com', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, subject, message, _captcha: 'false' })
+      });
+      if(res.ok) { statusDiv.textContent = '✓ Message sent successfully!'; statusDiv.className = 'form-status success'; form.reset(); }
+      else throw new Error();
+    } catch(err) { statusDiv.textContent = '❌ Sending failed. Please email directly.'; statusDiv.className = 'form-status error'; }
+    statusDiv.style.display='block';
+    setTimeout(()=> statusDiv.style.display='none', 5000);
+  });
+</script>
+</body>
+</html>
